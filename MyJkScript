@@ -13,7 +13,7 @@ node() {
 
         try {
             stage('Source Validation') {
-                sh './validateSource.sh'
+                sh 'echo "########### Source Validation ##############"'
             }
 
             stage('Build') {
@@ -25,67 +25,31 @@ node() {
                 else {
                     sh './gradlew --refresh-dependencies clean assembleAuto assembleRelease'
                 }
-
-                currentStage = 'Build - Jacoco Test Report';
-
-                withEnv(["ANDROID_SERIAL=emulator-5554"]) {
-                    lock('emulatorAndroid') {
-                        sh './gradlew :app:jacocoTestReport'
-                    }
-                }
             }
 
             stage('Gradle Static Analysis') {
-                currentStage = 'Gradle Static Analysis';
-                withSonarQubeEnv {
-                    sh "./gradlew --info :app:sonarqube"
-                }
+              sh 'echo "########### Gradle static analysis ##############"'
             }
 
             stage('Quality Gate') {
-                currentStage = 'Quality Gate';
-                def qg = waitForQualityGate()
-                if( qg.status != "OK" ){
-                    sh 'exit 1'
-                }
+             sh 'echo "########### Quality gate ##############"'
             }
 
             stage('Sign'){
-                currentStage = 'Sign';
-                if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop') {
-                    signAndroidApks keyStoreId: "AndroidBuildKey", keyAlias: "", apksToSign: "**/*-unsigned.apk"
-                }
+               sh 'echo "########### Signing ##############"'
             }
 
             stage('Upload to Google Play Store'){
-                currentStage = 'Upload to Google Play Store';
-
-                //When enabling Proguard with MOB-1238, also add below:  deobfuscationFilesPattern: '**/mapping.txt',
-
-                //Quick Guide to how we will use Google Play app publishing tracks:
-                //Internal: every build from the develop branch will be published here (these are not release candidates because they point at Stage)
-                //Alpha: every build from the master branch will be published here (these are release candidates because they point at Prod)
-                //Beta: intended for open/public betas (not likely to be used often, if at all)
-
-                if (env.BRANCH_NAME == 'develop') {
-                    androidApkUpload googleCredentialsId: 'Google Play', apkFilesPattern: '**/app-stage.apk', trackName: 'internal'
-                }
-
-                if (env.BRANCH_NAME == 'master') {
-                    androidApkUpload googleCredentialsId: 'Google Play', apkFilesPattern: '**/app-release.apk', trackName: 'alpha'
-                }
+                sh 'echo "########### Upload to Google playstore ##############"'
             }
 
             stage('Install on physical device'){
-                currentStage = 'Install on physical device';
-                //sh '/Users/mobiledevteam/Library/Android/sdk/platform-tools/adb -d install **/app-release-unsigned.apk'
+               sh 'echo "########### Installation ##############"'
             }
 
             currentBuild.result = 'SUCCESS'
         }
         catch(error) {
-
-            slackSend channel: '#tm-mobile-builds', color: 'danger', message: ":android: :frontline: ${env.BRANCH_NAME}  @${masterOfDisaster} broke the build!  Failed during ${currentStage} "
             currentBuild.result = 'FAILURE'
             throw new hudson.AbortException(error.toString());
         }
