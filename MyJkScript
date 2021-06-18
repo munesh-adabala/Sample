@@ -23,7 +23,7 @@ node() {
                     sh './gradlew --refresh-dependencies clean assembleAuto assembleStage'
                 }
                 else {
-                    sh './gradlew --refresh-dependencies clean assembleAuto assembleRelease'
+                    sh './gradlew --refresh-dependencies clean assembleRelease'
                 }
             }
 
