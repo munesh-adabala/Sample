@@ -1,48 +1,14 @@
 
 node() {
     def jenkinsCredentialsId = 'bf435957-b899-4019-8cd0-4e724a3cfcf9'
-    def commonBranchName = ''
 
     //First, check out the application project
     dir('android-FrontlineMobile') {
         checkout scm
-
-        //Now we need to know if env.BRANCH_NAME is actually a branch name or a PR number. We use the hub command to find out
-        //if BRANCH_NAME is a known PR. If it is, we ask hub to give us the corresponding branch name, otherwise, we treat
-        //BRANCH_NAME as if it really is the name of the branch.
-
-        withEnv(['PATH+EXTRA=/usr/local/bin']) {
-            commonBranchName = sh(returnStdout: true, script:'./getCommonBranchName.sh ${BRANCH_NAME}')
-        }
     }
-
-    dir('android-Common') {
-        //If a branch exists on the library project with the same name as the branch of the application project, then checkout that branch
-        //Otherwise, checkout either develop or master, depending on env.BRANCH_NAME
-
-        withCredentials([usernamePassword(credentialsId: jenkinsCredentialsId, usernameVariable: 'GIT_U', passwordVariable: 'GIT_P')]) {
-            def command = 'git ls-remote --heads --exit-code https://${GIT_U}:${GIT_P}@github.com/FrontlineEducation/android-Common.git ' + commonBranchName
-
-            //status of 2 tells us that no branch exists in the repo matching the specified branch name
-            def status = sh(returnStatus: true, script: command)
-
-            if (status == 2 || commonBranchName == 'master' || commonBranchName == 'unknown') {
-                if (env.BRANCH_NAME == 'master') {
-                    git url: 'https://github.com/FrontlineEducation/android-Common.git', credentialsId: jenkinsCredentialsId
-                }
-                else {
-                    git url: 'https://github.com/FrontlineEducation/android-Common.git', credentialsId: jenkinsCredentialsId, branch: 'develop'
-                }
-            }
-            else {
-                git url: 'https://github.com/FrontlineEducation/android-Common.git', credentialsId: jenkinsCredentialsId, branch: commonBranchName
-            }
-        }
-    }
-
+    
     dir('android-FrontlineMobile') {
-        sh 'git log --format="%ae" | head -1 | cut -d@ -f1 > commit-author.txt'
-        def masterOfDisaster = readFile('commit-author.txt').trim()
+    
         def currentStage = "NOT STARTED";
 
         try {
