@@ -3,11 +3,11 @@ node() {
     def jenkinsCredentialsId = 'bf435957-b899-4019-8cd0-4e724a3cfcf9'
 
     //First, check out the application project
-    dir('android-FrontlineMobile') {
+    dir('sample-jenkins') {
         checkout scm
     }
     
-    dir('android-FrontlineMobile') {
+    dir('sample-jenkins') {
     
         def currentStage = "NOT STARTED";
 
@@ -37,6 +37,14 @@ node() {
 
             stage('Sign'){
                sh 'echo "########### Signing ##############"'
+               
+                currentStage = 'Sign';
+                  withCredentials([string(credentialsId: 'keystorepass', variable: 'KEY_PASSWORD'),file(credentialsId: 'keystorefile', variable: 'KEYSTORE')])
+                  {
+                   sh '/c/Users/global/AppData/Local/Android/Sdk/build-tools/29.0.3/zipalign -v -p 4 /C/CustomJenkinsSpace/Jenkins/.jenkins/workspace/PipelineSample_master/sample-jenkins/app/build/outputs/apk/stage/app-*-unsigned.apk /C/CustomJenkinsSpace/Jenkins/.jenkins/workspace/PipelineSample_master/sample-jenkins/app/build/outputs/apk/stage/unsigned-aligned.apk'
+                   sh '/c/Users/global/AppData/Local/Android/Sdk/build-tools/29.0.3/apksigner.bat sign --ks $KEYSTORE --ks-pass pass:$KEY_PASSWORD --out /D/MyJenkinsApks/FLMobile/stage/sample_signed.apk /C/CustomJenkinsSpace/Jenkins/.jenkins/workspace/PipelineSample_master/sample-jenkins/app/build/outputs/apk/stage/unsigned-aligned.apk'
+                   }
+                currentBuild.result = 'SUCCESS'
             }
 
             stage('Upload to Google Play Store'){
@@ -45,6 +53,7 @@ node() {
 
             stage('Install on physical device'){
                sh 'echo "########### Installation ##############"'
+               sh '/C/Users/global/AppData/Local/Android/Sdk/platform-tools/adb -d install **/sample_signed.apk'
             }
 
             currentBuild.result = 'SUCCESS'
