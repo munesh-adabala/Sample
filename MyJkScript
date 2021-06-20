@@ -54,7 +54,7 @@ node() {
             stage('Install on physical device'){
                sh 'echo "########### Installation ##############"'
                sh '/C/Users/global/AppData/Local/Android/Sdk/platform-tools/adb -d install /D/MyJenkinsApks/SampleApp/release/sample_signed.apk'
-               sh '/C/Users/global/AppData/Local/Android/Sdk/platform-tools/adb shell am start -n com.example.sampleapp.MainActivity'
+               sh '/C/Users/global/AppData/Local/Android/Sdk/platform-tools/adb shell am start -n com.example.sampleapp/com.example.sampleapp.MainActivity'
                
             }
 
