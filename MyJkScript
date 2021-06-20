@@ -41,7 +41,7 @@ node() {
                 currentStage = 'Sign';
                   withCredentials([string(credentialsId: 'keystorepass', variable: 'KEY_PASSWORD'),file(credentialsId: 'keystorefile', variable: 'KEYSTORE')])
                   {
-     //              sh '/c/Users/global/AppData/Local/Android/Sdk/build-tools/30.0.3/zipalign -v -p 4 /C/CustomJenkinsSpace/Jenkins/.jenkins/workspace/PipelineSample_master/sample-jenkins/app/build/outputs/apk/release/app-*-unsigned.apk /C/CustomJenkinsSpace/Jenkins/.jenkins/workspace/PipelineSample_master/sample-jenkins/app/build/outputs/apk/release/unsigned-aligned.apk'
+                   sh '/c/Users/global/AppData/Local/Android/Sdk/build-tools/30.0.3/zipalign -v -p 4 /C/CustomJenkinsSpace/Jenkins/.jenkins/workspace/PipelineSample_master/sample-jenkins/app/build/outputs/apk/release/app-*-unsigned.apk /C/CustomJenkinsSpace/Jenkins/.jenkins/workspace/PipelineSample_master/sample-jenkins/app/build/outputs/apk/release/unsigned-aligned.apk'
                    sh '/c/Users/global/AppData/Local/Android/Sdk/build-tools/30.0.3/apksigner.bat sign --ks $KEYSTORE --ks-pass pass:$KEY_PASSWORD --out /D/MyJenkinsApks/SampleApp/release/sample_signed.apk /C/CustomJenkinsSpace/Jenkins/.jenkins/workspace/PipelineSample_master/sample-jenkins/app/build/outputs/apk/release/app-*-unsigned.apk'
                    }
                 currentBuild.result = 'SUCCESS'
