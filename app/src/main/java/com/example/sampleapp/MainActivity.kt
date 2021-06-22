@@ -11,5 +11,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         DaggerCarComponent.create().inject(this)
         car.start()
+        val imageView = findViewById<ImageView>(R.id.imageView)
+        Glide.with(this).load("https://i.gifer.com/Buo.gif").into(imageView)
     }
 }
