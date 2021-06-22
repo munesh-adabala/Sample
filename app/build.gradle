@@ -47,4 +47,8 @@ dependencies {
     implementation 'com.google.dagger:dagger-android-support:2.20' // if you use the support libraries
     kapt 'com.google.dagger:dagger-android-processor:2.20'
     kapt 'com.google.dagger:dagger-compiler:2.20'
+    
+       implementation 'com.github.bumptech.glide:glide:4.11.0'
+    // Glide v4 uses this new annotation processor -- see https://bumptech.github.io/glide/doc/generatedapi.html
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 }
