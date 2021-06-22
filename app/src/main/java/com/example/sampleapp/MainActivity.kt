@@ -3,6 +3,8 @@ package com.example.sampleapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import javax.inject.Inject
+import android.widget.ImageView
+import com.bumptech.glide.Glide
 
 class MainActivity : AppCompatActivity() {
     @Inject lateinit var car:Car
