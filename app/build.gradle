@@ -19,13 +19,14 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    
 //    firebaseAppDistribution {
 //        releaseNotes = "Test Notes"
 //        appId = "1:395461281272:android:03c06000388ac5b84b820d"
 //        groups= "QA_Test"
 //        serviceCredentialsFile="$rootDir/sampleappdistribution.json"
 //    }
+
     buildTypes {
         release {
             minifyEnabled false

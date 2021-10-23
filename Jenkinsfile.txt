@@ -6,32 +6,19 @@ node() {
     //First, check out the application project
     dir('Sample') {
         checkout scm
-
-        //Now we need to know if env.BRANCH_NAME is actually a branch name or a PR number. We use the hub command to find out
-        //if BRANCH_NAME is a known PR. If it is, we ask hub to give us the corresponding branch name, otherwise, we treat
-        //BRANCH_NAME as if it really is the name of the branch.
-
-        withEnv(['PATH+EXTRA=/usr/local/bin']) {
-            commonBranchName = sh(returnStdout: true, script:'./getCommonBranchName.sh ${BRANCH_NAME}')
-        }
+	git url: 'https://github.com/FrontlineEducation/android-Common.git', credentialsId: jenkinsCredentialsId, branch: 'develop'
     }
 
     dir('Sample'){
         def currentStage = "NOT STARTED";
 
         try {
-            stage('Source Validation') {
-                sh './validateSource.sh'
-            }
 
             stage('Build') {
                 currentStage = 'Build - Refresh and Clean';
-                if (env.BRANCH_NAME == 'develop' || env.BRANCH_NAME == 'MOB-6109') {
-                    sh './gradlew --refresh-dependencies clean assembleAuto assembleStage'
-                }
-                else {
-                    sh './gradlew --refresh-dependencies clean assembleAuto assembleRelease'
-                }
+         
+                    sh './gradlew --refresh-dependencies clean assembleRelease'
+     
             }
 
 
