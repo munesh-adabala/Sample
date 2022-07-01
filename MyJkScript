@@ -16,11 +16,15 @@ node() {
                 sh 'echo "########### Source Validation ##############"'
             }
 
+            stage('patch'){
+               git apply my-patch.patch
+            }
+
             stage('Build') {
                 currentStage = 'Build - Refresh and Clean';
 
                 if (env.BRANCH_NAME == 'develop') {
-                    sh './gradlew --refresh-dependencies clean assembleAuto assembleStage'
+                    sh './gradlew --refresh-dependencies clean assembleStage'
                 }
                 else {
                     sh './gradlew --refresh-dependencies clean assembleRelease'
