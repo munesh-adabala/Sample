@@ -17,7 +17,7 @@ node() {
             }
 
             stage('patch'){
-               git apply my-patch.patch
+      //         git apply my-patch.patch
             }
 
             stage('Build') {
